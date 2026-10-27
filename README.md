@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚔️ DOTA 2 — ЛЕГЕНДА MOBA ⚔️</title>
+<!-- ИКОНКА САЙТА -->
+<link rel="icon" type="image/png" href="https://liquipedia.net/commons/images/thumb/0/0e/Dota_2_logo_grey.png/180px-Dota_2_logo_grey.png">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: #0a0a0f;
+    color: #e8e8e8;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      radial-gradient(2px 2px at 20% 30%, #d4af37, transparent),
+      radial-gradient(2px 2px at 60% 70%, #fff, transparent),
+      radial-gradient(1px 1px at 50% 50%, #d4af37, transparent),
+      radial-gradient(1px 1px at 80% 10%, #fff, transparent);
+    background-size: 200% 200%;
+    animation: stars 20s linear infinite;
+    z-index: -1;
+    opacity: 0.4;
+  }
+  @keyframes stars { 0% { background-position: 0% 0%; } 100% { background-position: 100% 100%; } }
+
+  /* ХЕДЕР С ФОНОВОЙ КАРТИНКОЙ */
+  header {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    background: 
+      linear-gradient(rgba(10,10,15,0.85), rgba(10,10,15,0.95)),
+      url('https://www.dota2.com.cn/enjoy/gamewall/1366x768/01.jpg') center/cover no-repeat;
+    padding: 20px;
+  }
+  .logo-big {
+    font-size: clamp(60px, 12vw, 160px);
+    font-weight: 900;
+    letter-spacing: 8px;
+    background: linear-gradient(180deg, #ffd700 0%, #d4af37 40%, #8b0000 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 60px rgba(212, 175, 55, 0.5);
+    animation: glow 2s ease-in-out infinite alternate;
+    position: relative;
+    z-index: 2;
+  }
+  @keyframes glow { from { filter: drop-shadow(0 0 20px rgba(212,175,55,0.5)); } to { filter: drop-shadow(0 0 50px rgba(212,175,55,0.9)); } }
+  header .subtitle { font-size: clamp(16px, 2.5vw, 26px); color: #d4af37; letter-spacing: 6px; margin-top: 15px; text-transform: uppercase; z-index: 2; }
+  header .tagline { margin-top: 25px; font-size: 18px; color: #ccc; max-width: 600px; z-index: 2; text-shadow: 0 2px 10px #000; }
+  .scroll-hint { position: absolute; bottom: 30px; font-size: 30px; color: #d4af37; animation: bounce 1.5s infinite; z-index: 2; }
+  @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(15px); } }
+
+  /* НАВИГАЦИЯ */
+  nav {
+    position: sticky; top: 0; z-index: 999;
+    background: rgba(10, 10, 15, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 18px; text-align: center;
+    border-bottom: 2px solid #8b0000;
+    box-shadow: 0 5px 30px rgba(0,0,0,0.8);
+  }
+  nav a { color: #d4af37; text-decoration: none; margin: 0 12px; font-weight: bold; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; padding: 8px 12px; border-radius: 4px; transition: all 0.3s; display: inline-block; }
+  nav a:hover { color: #0a0a0f; background: #d4af37; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(212,175,55,0.5); }
+
+  /* СЕКЦИИ */
+  section { max-width: 1200px; margin: 0 auto; padding: 100px 30px; }
+  .section-title { font-size: clamp(32px, 5vw, 54px); text-align: center; margin-bottom: 20px; background: linear-gradient(90deg, #d4af37, #ffd700, #d4af37); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; letter-spacing: 3px; }
+  .section-sub { text-align: center; color: #888; margin-bottom: 60px; font-size: 16px; letter-spacing: 2px; text-transform: uppercase; }
+
+  .reveal { opacity: 0; transform: translateY(50px); transition: all 0.8s ease; }
+  .reveal.active { opacity: 1; transform: translateY(0); }
+
+  /* О ИГРЕ */
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+  .about-text p { margin-bottom: 18px; font-size: 16px; color: #ccc; }
+  .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .stat-box { background: linear-gradient(135deg, #1a1a24, #0f0f15); padding: 30px 20px; border-radius: 12px; text-align: center; border: 1px solid #333; transition: 0.4s; }
+  .stat-box:hover { border-color: #d4af37; transform: translateY(-5px); box-shadow: 0 10px 30px rgba(212,175,55,0.2); }
+  .stat-num { font-size: 42px; font-weight: 900; color: #d4af37; display: block; }
+  .stat-label { color: #888; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; }
+
+  /* ГЕРОИ С КАРТИНКАМИ */
+  .heroes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 25px; }
+  .hero-card { background: linear-gradient(135deg, #1a1a24, #0f0f15); border-radius: 15px; text-align: center; border: 1px solid #333; cursor: pointer; transition: all 0.4s; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+  .hero-card:hover { transform: translateY(-10px) scale(1.02); border-color: #d4af37; box-shadow: 0 20px 50px rgba(212,175,55,0.3); }
+  .hero-img { width: 100%; height: 160px; object-fit: cover; object-position: top; border-bottom: 2px solid #333; transition: 0.4s; }
+  .hero-card:hover .hero-img { transform: scale(1.05); border-bottom-color: #d4af37; }
+  .hero-content { padding: 20px 15px; }
+  .hero-card h3 { color: #d4af37; font-size: 20px; margin-bottom: 8px; }
+  .hero-card p { color: #999; font-size: 13px; }
+  .role-tag { display: inline-block; margin-top: 12px; padding: 4px 12px; background: rgba(139,0,0,0.5); border: 1px solid #8b0000; border-radius: 20px; font-size: 11px; color: #d4af37; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* ГАЛЕРЕЯ */
+  .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .gallery-item { border-radius: 12px; overflow: hidden; border: 1px solid #333; transition: 0.4s; position: relative; }
+  .gallery-item:hover { border-color: #d4af37; transform: scale(1.03); box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+  .gallery-item img { width: 100%; height: 200px; object-fit: cover; display: block; transition: 0.4s; }
+  .gallery-item:hover img { transform: scale(1.1); }
+  .gallery-caption { padding: 12px; background: #111; color: #aaa; font-size: 13px; text-align: center; }
+
+  /* РОЛИ */
+  .roles { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+  .role { background: linear-gradient(135deg, #15151f, #0a0a0f); padding: 28px; border-radius: 12px; border-left: 4px solid #8b0000; transition: 0.4s; }
+  .role:hover { border-left-color: #d4af37; transform: translateX(10px); background: linear-gradient(135deg, #1a1a28, #0f0f18); }
+  .role h4 { color: #d4af37; font-size: 20px; margin-bottom: 10px; }
+  .role p { color: #999; font-size: 14px; }
+
+  /* ФАКТЫ */
+  .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+  .fact { background: linear-gradient(135deg, #1a1a24, #0f0f15); padding: 25px; border-radius: 12px; border: 1px solid #333; transition: 0.4s; display: flex; gap: 18px; align-items: flex-start; }
+  .fact:hover { border-color: #d4af37; transform: scale(1.03); box-shadow: 0 10px 30px rgba(212,175,55,0.2); }
+  .fact .num { font-size: 32px; font-weight: 900; color: #8b0000; min-width: 50px; line-height: 1; }
+  .fact .text { color: #ccc; font-size: 15px; }
+  .fact .text b { color: #d4af37; }
+
+  /* ТАЙМЕР */
+  .timer-box { text-align: center; background: linear-gradient(135deg, #1a0000, #0a0a0f); padding: 50px 30px; border-radius: 20px; border: 2px solid #8b0000; box-shadow: 0 0 60px rgba(139,0,0,0.4); }
+  .timer-box h3 { color: #d4af37; font-size: 24px; margin-bottom: 25px; letter-spacing: 2px; }
+  .timer { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+  .time-unit { background: #0a0a0f; padding: 20px 30px; border-radius: 12px; border: 1px solid #d4af37; min-width: 110px; }
+  .time-unit .val { font-size: 48px; font-weight: 900; color: #d4af37; display: block; line-height: 1; font-variant-numeric: tabular-nums; }
+  .time-unit .lbl { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 2px; margin-top: 8px; }
+
+  /* КНОПКА НАВЕРХ */
+  #toTop { position: fixed; bottom: 30px; right: 30px; width: 55px; height: 55px; border-radius: 50%; background: linear-gradient(135deg, #d4af37, #8b0000); color: #fff; border: none; font-size: 24px; cursor: pointer; opacity: 0; pointer-events: none; transition: 0.4s; box-shadow: 0 5px 20px rgba(212,175,55,0.5); z-index: 1000; }
+  #toTop.show { opacity: 1; pointer-events: auto; }
+  #toTop:hover { transform: translateY(-5px) scale(1.1); box-shadow: 0 10px 30px rgba(212,175,55,0.8); }
+
+  /* ФУТЕР */
+  footer { background: #050508; text-align: center; padding: 50px 20px; color: #666; border-top: 2px solid #8b0000; }
+  footer .heart { color: #d4af37; animation: pulse 1.5s infinite; display: inline-block; }
+  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
+
+  @media (max-width: 768px) {
+    .about-grid { grid-template-columns: 1fr; }
+    nav a { margin: 4px 6px; font-size: 11px; padding: 5px 8px; }
+    section { padding: 60px 20px; }
+    .time-unit { min-width: 80px; padding: 15px 20px; }
+    .time-unit .val { font-size: 32px; }
+    .hero-img { height: 120px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ХЕДЕР -->
+<header>
+  <div class="logo-big">DOTA 2</div>
+  <div class="subtitle">Легенда MOBA</div>
+  <p class="tagline">Две команды. Пять героев. Одна цель — уничтожить Древний врага.</p>
+  <div class="scroll-hint">▼</div>
+</header>
+
+<!-- НАВИГАЦИЯ -->
+<nav>
+  <a href="#about">О игре</a>
+  <a href="#heroes">Герои</a>
+  <a href="#gallery">Галерея</a>
+  <a href="#roles">Роли</a>
+  <a href="#facts">Факты</a>
+  <a href="#timer">Таймер</a>
+</nav>
+
+<!-- О ИГРЕ -->
+<section id="about" class="reveal">
+  <h2 class="section-title">Что такое Dota 2?</h2>
+  <p class="section-sub">Многопользовательская битва арен</p>
+  <div class="about-grid">
+    <div class="about-text">
+      <p><b style="color:#d4af37">Dota 2</b> — легендарная MOBA от Valve, вышедшая в 2013 году. Это одна из самых популярных киберспортивных дисциплин планеты с призовыми фондами в десятки миллионов долларов.</p>
+      <p>Две команды по 5 игроков сражаются на симметричной карте. Цель — уничтожить <b style="color:#d4af37">Древний</b> противника, прорвавшись через башни и линии обороны.</p>
+      <p>Более <b style="color:#d4af37">120 героев</b>, сотни предметов, бесконечные комбинации — каждая игра уникальна.</p>
+    </div>
+    <div class="about-stats">
+      <div class="stat-box"><span class="stat-num">120+</span><span class="stat-label">Героев</span></div>
+      <div class="stat-box"><span class="stat-num">2013</span><span class="stat-label">Год выхода</span></div>
+      <div class="stat-box"><span class="stat-num">$40M</span><span class="stat-label">Призовые TI</span></div>
+      <div class="stat-box"><span class="stat-num">5v5</span><span class="stat-label">Формат</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ГЕРОИ С ФОТКАМИ -->
+<section id="heroes" class="reveal">
+  <h2 class="section-title">Легендарные герои</h2>
+  <p class="section-sub">Реальные портреты из игры</p>
+  <div class="heroes">
+    <div class="hero-card">
+      <img src="https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/pudge.png" alt="Pudge" class="hero-img">
+      <div class="hero-content">
+        <h3>Pudge</h3>
+        <p>Мясник с крюком. Один удачный хук решает исход боя.</p>
+        <span class="role-tag">Strength</span>
+      </div>
+    </div>
+    <div class="hero-card">
+      <img src="https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/drow_ranger.png" alt="Drow Ranger" class="hero-img">
+      <div class="hero-content">
+        <h3>Drow Ranger</h3>
+        <p>Ледяная лучница с чудовищным уроном на дистанции.</p>
+        <span class="role-tag">Agility</span>
+      </div>
+    </div>
+    <div class="hero-card">
+      <img src="https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/invoker.png" alt="Invoker" class="hero-img">
+      <div class="hero-content">
+        <h3>Invoker</h3>
+        <p>Маг с 10 заклинаниями. Сложнейший, но смертоносный.</p>
+        <span class="role-tag">Intelligence</span>
+      </div>
+    </div>
+    <div class="hero-card">
+      <img src="https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/zuus.png" alt="Zeus" class="hero-img">
+      <div class="hero-content">
+        <h3>Zeus</h3>
+        <p>Бог грома. Ультимейт бьёт по всей карте.</p>
+        <span class="role-tag">Intelligence</span>
+      </div>
+    </div>
+    <div class="hero-card">
+      <img src="https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/juggernaut.png" alt="Juggernaut" class="hero-img">
+      <div class="hero-content">
+        <h3>Juggernaut</h3>
+        <p>Мастер клинка. Неуязвимость во время ультимейта.</p>
+        <span class="role-tag">Agility</span>
+      </div>
+    </div>
+    <div class="hero-card">
+      <img src="https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/crystal_maiden.png" alt="Crystal Maiden" class="hero-img">
+      <div class="hero-content">
+        <h3>Crystal Maiden</h3>
+        <p>Ледяная поддержка. Мана команде и мощный контроль.</p>
+        <span class="role-tag">Intelligence</span>
+      </div>
+    </div>
+    <div class="hero-card">
+      <img src="https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/dragon_knight.png" alt="Dragon Knight" class="hero-img">
+      <div class="hero-content">
+        <h3>Dragon Knight</h3>
+        <p>Превращается в дракона. Танк и осадная машина.</p>
+        <span class="role-tag">Strength</span>
+      </div>
+    </div>
+    <div class="hero-card">
+      <img src="https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/antimage.png" alt="Anti-Mage" class="hero-img">
+      <div class="hero-content">
+        <h3>Anti-Mage</h3>
+        <p>Пожиратель маны. Кошмар любого мага.</p>
+        <span class="role-tag">Agility</span>
+      </div>
+    </div>
+    <div class="hero-card">
+      <img src="https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/enigma.png" alt="Enigma" class="hero-img">
+      <div class="hero-content">
+        <h3>Enigma</h3>
+        <p>Чёрная дыра — самый страшный контроль в игре.</p>
+        <span class="role-tag">Intelligence</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ГАЛЕРЕЯ -->
+<section id="gallery" class="reveal">
+  <h2 class="section-title">Галерея Dota 2</h2>
+  <p class="section-sub">Атмосфера, турниры, легенды</p>
+  <div class="gallery">
+    <div class="gallery-item">
+      <img src="https://liquipedia.net/commons/images/thumb/0/0e/Dota_2_Aegis_of_Champions_2023_collectible_1.jpg/600px-Dota_2_Aegis_of_Champions_2023_collectible_1.jpg" alt="Aegis of Champions">
+      <div class="gallery-caption">Aegis of Champions — трофей победителей The International</div>
+    </div>
+    <div class="gallery-item">
+      <img src="https://www.dota2.com.cn/enjoy/gamewall/1366x768/02.jpg" alt="Dota 2 Art">
+      <div class="gallery-caption">Официальные обои Dota 2</div>
+    </div>
+    <div class="gallery-item">
+      <img src="https://www.dota2.com.cn/enjoy/gamewall/1366x768/03.jpg" alt="Dota 2 Art">
+      <div class="gallery-caption">Арт из игры</div>
+    </div>
+    <div class="gallery-item">
+      <img src="https://liquipedia.net/commons/images/thumb/0/0e/Dota_2_logo_grey.png/400px-Dota_2_logo_grey.png" alt="Dota 2 Logo">
+      <div class="gallery-caption">Логотип Dota 2</div>
+    </div>
+  </div>
+</section>
+
+<!-- РОЛИ -->
+<section id="roles" class="reveal">
+  <h2 class="section-title">Роли в команде</h2>
+  <p class="section-sub">Пять позиций — пять судеб</p>
+  <div class="roles">
+    <div class="role"><h4>⚔️ Carry</h4><p>Позиция 1. Главный дамагер, набирает силу к концу игры.</p></div>
+    <div class="role"><h4>🎯 Mid</h4><p>Позиция 2. Solo по центру. Активный маг или убийца.</p></div>
+    <div class="role"><h4>🛡️ Offlane</h4><p>Позиция 3. Сложная линия. Танк, инициатор, живучий боец.</p></div>
+    <div class="role"><h4>💚 Soft Support</h4><p>Позиция 4. Роумер и помощник, часто с контролем.</p></div>
+    <div class="role"><h4>✨ Hard Support</h4><p>Позиция 5. Варды, лечение, спасение — опора команды.</p></div>
+  </div>
+</section>
+
+<!-- ФАКТЫ -->
+<section id="facts" class="reveal">
+  <h2 class="section-title">Интересные факты</h2>
+  <p class="section-sub">Ты знал это?</p>
+  <div class="facts">
+    <div class="fact"><span class="num">01</span><span class="text">Призовой фонд The International 2021 превысил <b>40 миллионов долларов</b> — рекорд в киберспорте.</span></div>
+    <div class="fact"><span class="num">02</span><span class="text">В игре более <b>120 героев</b> и сотни предметов для сборки.</span></div>
+    <div class="fact"><span class="num">03</span><span class="text">Dota 2 — полностью <b>бесплатная</b> игра (free-to-play).</span></div>
+    <div class="fact"><span class="num">04</span><span class="text">Первый The International прошёл в <b>2011 году</b> в Кёльне.</span></div>
+    <div class="fact"><span class="num">05</span><span class="text">Средний матч длится около <b>40 минут</b>, но бывают и марафоны по 2 часа.</span></div>
+    <div class="fact"><span class="num">06</span><span class="text">Dota 2 имеет <b>собственный сезон</b> с турнирами по всему миру.</span></div>
+  </div>
+</section>
+
+<!-- ТАЙМЕР -->
+<section id="timer" class="reveal">
+  <h2 class="section-title">До следующего патча</h2>
+  <p class="section-sub">Valve любит интригу</p>
+  <div class="timer-box">
+    <h3>⏳ Обратный отсчёт</h3>
+    <div class="timer">
+      <div class="time-unit"><span class="val" id="days">00</span><span class="lbl">Дней</span></div>
+      <div class="time-unit"><span class="val" id="hours">00</span><span class="lbl">Часов</span></div>
+      <div class="time-unit"><span class="val" id="minutes">00</span><span class="lbl">Минут</span></div>
+      <div class="time-unit"><span class="val" id="seconds">00</span><span class="lbl">Секунд</span></div>
+    </div>
+  </div>
+</section>
+
+<button id="toTop" title="Наверх">↑</button>
+
+<footer>
+  <p>Сайт создан в блокноте с <span class="heart">❤</span> для настоящих фанатов Dota 2</p>
+  <p style="margin-top:10px; font-size:13px;">© 2025. Dota 2 — торговая марка Valve Corporation.</p>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+  }, { threshold: 0.15 });
+  reveals.forEach(el => revealObserver.observe(el));
+
+  const toTop = document.getElementById('toTop');
+  window.addEventListener('scroll', () => { window.scrollY > 400 ? toTop.classList.add('show') : toTop.classList.remove('show'); });
+  toTop.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+  const targetDate = new Date('2025-12-31T00:00:00').getTime();
+  function updateTimer() {
+    const now = new Date().getTime();
+    const diff = targetDate - now;
+    if (diff < 0) { document.querySelectorAll('.val').forEach(el => el.textContent = '00'); return; }
+    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const s = Math.floor((diff % (1000 * 60)) / 1000);
+    document.getElementById('days').textContent = String(d).padStart(2, '0');
+    document.getElementById('hours').textContent = String(h).padStart(2, '0');
+    document.getElementById('minutes').textContent = String(m).padStart(2, '0');
+    document.getElementById('seconds').textContent = String(s).padStart(2, '0');
+  }
+  updateTimer(); setInterval(updateTimer, 1000);
+
+  document.querySelectorAll('.hero-card').forEach(card => {
+    card.addEventListener('click', () => {
+      card.style.transform = 'scale(1.1) rotate(2deg)';
+      setTimeout(() => { card.style.transform = ''; }, 300);
+    });
+  });
+</script>
+</body>
+</html>
